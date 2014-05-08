@@ -28,7 +28,7 @@ void Minishift::writeColumns(const uint8_t *buf, int len) {
 void Minishift::writeColumns(const uint8_t *buf, int len, int ms) {
 	for(int i = 0; i < len; i++) {
 		this->startTransaction();
-		shiftOut(this->data_pin, this->clock_pin, MSBFIRST, buf[i]);
+		shiftOut(this->data_pin, this->clock_pin, LSBFIRST, buf[i]);
 		if(ms != -1) {
 			this->update();
 			delay(ms);
@@ -41,12 +41,24 @@ void Minishift::writeString(const char *str) {
 }
 
 void Minishift::writeString(const char *str, int ms) {
+	this->writeString(str, ms, 0);
+}
+
+void Minishift::writeString(const char *str, int ms, int trailing) {
 	for(const char *c = str; *c != '\0'; c++) {
 		for(int col = 0; col < 5; col++) {
 			this->startTransaction();
-			shiftOut(this->data_pin, this->clock_pin, MSBFIRST, pgm_read_byte(font + (*c * 5) + col));
+			shiftOut(this->data_pin, this->clock_pin, LSBFIRST, pgm_read_byte(font + (*c * 5) + col));
+			this->update();
 			if(ms != -1) {
-				this->update();
+				delay(ms);
+			}
+		}
+		for(int col = 0; col < trailing; col++) {
+			this->startTransaction();
+			shiftOut(this->data_pin, this->clock_pin, LSBFIRST, 0);
+			this->update();
+			if(ms != -1) {
 				delay(ms);
 			}
 		}
