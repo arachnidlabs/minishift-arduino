@@ -29,8 +29,8 @@ void Minishift::writeColumns(const uint8_t *buf, int len, int ms) {
 	for(int i = 0; i < len; i++) {
 		this->startTransaction();
 		shiftOut(this->data_pin, this->clock_pin, LSBFIRST, buf[i]);
+		this->update();
 		if(ms != -1) {
-			this->update();
 			delay(ms);
 		}
 	}
