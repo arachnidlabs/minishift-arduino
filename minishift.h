@@ -18,6 +18,7 @@ class Minishift
   	void writeColumns(const uint8_t *buf, int len, int ms);
   	void writeString(const char *str);
   	void writeString(const char *str, int ms);
+  	void writeString(const char *str, int ms, int trailing);
   	void update();
 };
 
